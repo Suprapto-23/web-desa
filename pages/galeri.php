@@ -261,11 +261,8 @@
                        // Base path project (sesuaikan dengan nama folder project kamu)
 $basePath = "/sistem_pelayanan_desa/";
 
-// Gunakan thumbnail jika ada, kalau tidak pakai file utama
 $imagePath = !empty($item['thumbnail_path']) ? $item['thumbnail_path'] : $item['file_path'];
-
-// Pastikan path benar (tambahkan basePath di depan)
-$imagePath = $basePath . ltrim($imagePath, '/');
+$imagePath = '../' . ltrim($imagePath, './');
 
                     ?>
                     <div class="gallery-item bg-white rounded-xl overflow-hidden shadow-md cursor-pointer" 
@@ -427,21 +424,19 @@ $imagePath = $basePath . ltrim($imagePath, '/');
         mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', toggleMobileMenu));
             // Data untuk gambar galeri dari PHP
             const galleryData = [
-                <?php foreach ($galeri as $index => $item): 
-                    $tanggal = new DateTime($item['tanggal_upload']);
-                    $formattedDate = $tanggal->format('d F Y');
-                    // Gunakan file utama untuk modal (bukan thumbnail)
-                    $imagePath = checkImage($item['file_path']);
-                ?>
-                
-                    title: "<?= addslashes($item['judul']) ?>",
-                    date: "<?= $formattedDate ?>",
-                    description: "<?= addslashes($item['deskripsi'] ?? 'Tidak ada deskripsi') ?>",
-                    category: "<?= addslashes($item['nama_kategori']) ?>",
-                    image: "<?= $imagePath ?>"
-                
-                <?php endforeach; ?>
-            ];
+    <?php foreach ($galeri as $item):
+        $tanggal = new DateTime($item['tanggal_upload']);
+        $imagePath = '../' . ltrim($item['file_path'], './');
+    ?>
+    {
+        title: "<?= addslashes($item['judul']) ?>",
+        date: "<?= $tanggal->format('d F Y') ?>",
+        description: "<?= addslashes($item['deskripsi'] ?? 'Tidak ada deskripsi') ?>",
+        category: "<?= addslashes($item['nama_kategori']) ?>",
+        image: "<?= $imagePath ?>"
+    },
+    <?php endforeach; ?>
+];
 
             // JavaScript untuk interaksi galeri
             document.addEventListener('DOMContentLoaded', function() {

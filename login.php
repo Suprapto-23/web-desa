@@ -6,20 +6,25 @@ require_once './config/functions.php';
 
 // Basic login validation
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'] ?? '';
+    $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     $error = '';
 
-    // Sample validation (replace with actual authentication logic)
-    if ($username === "admin" && $password === "winduajiindependent") {
+    $stmt = $pdo->prepare("SELECT id, password FROM users WHERE username = ? LIMIT 1");
+    $stmt->execute([$username]);
+    $user = $stmt->fetch();
+
+    if ($user && password_verify($password, $user['password'])) {
+        session_regenerate_id(true);
         $_SESSION['loggedin'] = true;
-        $_SESSION['login_success'] = true; // Flag untuk SweetAlert
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['login_success'] = true;
         header("Location: ./admin/dashboard.php");
         exit;
     } else {
         $error = "Username atau password salah!";
         $_SESSION['login_error'] = $error;
-        $_SESSION['login_attempt'] = true; // Flag untuk reset form
+        $_SESSION['login_attempt'] = true;
     }
 }
 ?>
