@@ -1,18 +1,9 @@
 <?php
 session_start();
 
-// Koneksi database sederhana (gantikan dengan koneksi yang sesuai)
-$host = 'localhost';
-$dbname = 'desa_winduaji';
-$username = 'root';
-$password = '';
-
-try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Koneksi database gagal: " . $e->getMessage());
-}
+// Koneksi database (otomatis: XAMPP saat lokal, Aiven saat di Vercel)
+require_once __DIR__ . '/config/database.php';
+$conn = get_db_connection();
 
 // Data desa dari database
 $query = "SELECT * FROM desa_profil LIMIT 1";
